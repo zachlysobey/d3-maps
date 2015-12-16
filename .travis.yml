@@ -1,0 +1,5 @@
+script: bash ./deploy.sh
+env:
+  global:
+    - GH_REF: github.com/zachlysobey/d3-maps.git
+    - secure: "ii/abLyfz7u4gmYB7LgEAribY7JDbxGAHBofKKaPx91IYZx9RWFVWG+ULREIqzKQiRtTY1p+nMglWSeWb2STtASwv9oEhs+yTAajS/lK1Am/vv1rLaA1aV7UkLrwi0Y+AOy157wO8bQX1vwUrkN0CrCkTNuiClu/bWhYQ+YRrKzoAc+6R4a7GiCu08I91FsHC+e5/WmzKele6dBhnucK52G3/L3hKDzLMR73qVNJ+FeRSkDZgytqW7jx8iVNw39HdjH0Crr2zZ7sDUrT5Fg9MzFiu0qbvrr8c+Fmj9IMJNlKk1SPjiiDDZhwgsafR5n+l1Mn1V0FIxG6sQybNRzOYHvsH363wm/xE/3FXD0uLIdxqBnhvHTMuEU2YVgO/5UbP0XzzSxWIjLKJmB/MNiMpbNLMc+jp9FXKslJo6sWXGt4DS9pr7aB7mLk8Ny0nzJU+79BZyezXXnJOCRL05J3Qe8MavF6Bzhu2euesNgf7+7tzvQjwuxa6hCvgsjrq6P8sdEGAbfCggKydOfmKvhw46O9zAw252vpqeI9k2XclfFrbruu8Iz0FO7EdUbN6GdDJaBBzi+9528Di09RR/0A2B2MDiU85VTudlnPQjYfYgXIBZBnRW/9sVNiolTfAbEjrygDkpjaItWi4Yz80KRfZp5MkMr7vhBy259PlfOPz7g="
