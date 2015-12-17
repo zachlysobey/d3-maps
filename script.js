@@ -8,7 +8,10 @@ const width = 960;
 const height = 1160;
 
 const svg = appendNewSvgElement(width, height);
-const path = d3.geo.path().projection(buildProjection());
+const projection = buildProjection();
+const path = d3.geo.path()
+    .projection(projection)
+    .pointRadius(2);
 
 getUkGeoData().then(drawMap);
 
@@ -39,6 +42,8 @@ function getUkGeoData() {
 function drawMap(ukData) {
     drawSubunits(ukData);
     drawBoundaries(ukData);
+    displayPlaces(ukData);
+    addCountryLabels(ukData);
 }
 
 function drawSubunits(ukData) {
@@ -55,18 +60,49 @@ function drawBoundaries(ukData) {
     drawIrishCoustline(ukData);
 }
 
-function drawInteriorBorders(uk) {
-    const mesh = topojson.mesh(uk, uk.objects.subunits, (a, b) => a !== b && a.id !== 'IRL');
+function drawInteriorBorders(ukData) {
+    const mesh = topojson.mesh(ukData, ukData.objects.subunits, (a, b) => a !== b && a.id !== 'IRL');
     svg.append('path')
         .datum(mesh)
         .attr('d', path)
         .attr('class', 'subunit-boundary');
 }
 
-function drawIrishCoustline(uk) {
-    const mesh = topojson.mesh(uk, uk.objects.subunits, (a, b) => a === b && a.id === 'IRL');
+function drawIrishCoustline(ukData) {
+    const mesh = topojson.mesh(ukData, ukData.objects.subunits, (a, b) => a === b && a.id === 'IRL');
     svg.append('path')
         .datum(mesh)
         .attr('d', path)
         .attr('class', 'subunit-boundary IRL');
+}
+
+function displayPlaces(ukData) {
+    svg.append("path")
+        .datum(topojson.feature(ukData, ukData.objects.places))
+        .attr("d", path)
+        .attr("class", "place");
+
+    svg.selectAll(".place-label")
+        .data(topojson.feature(ukData, ukData.objects.places).features)
+        .enter()
+        .append("text")
+        .attr("class", "place-label")
+        .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
+        .attr("dy", ".35em")
+        .text(function(d) { return d.properties.name; });
+
+    svg.selectAll(".place-label")
+        .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+        .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; });
+}
+
+function addCountryLabels(ukData) {
+    svg.selectAll(".subunit-label")
+        .data(topojson.feature(ukData, ukData.objects.subunits).features)
+        .enter()
+        .append("text")
+        .attr("class", function(d) { return "subunit-label " + d.id; })
+        .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+        .attr("dy", ".35em")
+        .text(function(d) { return d.properties.name; });
 }
