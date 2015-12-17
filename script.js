@@ -77,32 +77,32 @@ function drawIrishCoustline(ukData) {
 }
 
 function displayPlaces(ukData) {
-    svg.append("path")
+    svg.append('path')
         .datum(topojson.feature(ukData, ukData.objects.places))
-        .attr("d", path)
-        .attr("class", "place");
+        .attr('d', path)
+        .attr('class', 'place');
 
-    svg.selectAll(".place-label")
+    svg.selectAll('.place-label')
         .data(topojson.feature(ukData, ukData.objects.places).features)
         .enter()
-        .append("text")
-        .attr("class", "place-label")
-        .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
-        .attr("dy", ".35em")
-        .text(function(d) { return d.properties.name; });
+        .append('text')
+        .attr('class', 'place-label')
+        .attr('transform', d => `translate(${projection(d.geometry.coordinates)})`)
+        .attr('dy', '.35em')
+        .text(d => d.properties.name);
 
-    svg.selectAll(".place-label")
-        .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-        .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; });
+    svg.selectAll('.place-label')
+        .attr('x', d => d.geometry.coordinates[0] > -1 ? 6 : -6)
+        .style('text-anchor', d => d.geometry.coordinates[0] > -1 ? 'start' : 'end');
 }
 
 function addCountryLabels(ukData) {
-    svg.selectAll(".subunit-label")
+    svg.selectAll('.subunit-label')
         .data(topojson.feature(ukData, ukData.objects.subunits).features)
         .enter()
-        .append("text")
-        .attr("class", function(d) { return "subunit-label " + d.id; })
-        .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-        .attr("dy", ".35em")
-        .text(function(d) { return d.properties.name; });
+        .append('text')
+        .attr('class', d => `subunit-label ${d.id}`)
+        .attr('transform', d => `translate(${path.centroid(d)})`)
+        .attr('dy', '.35em')
+        .text(d => d.properties.name);
 }
