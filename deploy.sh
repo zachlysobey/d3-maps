@@ -8,6 +8,8 @@ mkdir out;
 # build the project
 cp index.html out/index.html
 cp uk.json out/uk.json
+cp script.js out/script.js
+cp style.css out/style.css
 
 # go to the out directory and create a *new* Git repo
 cd out
