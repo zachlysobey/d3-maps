@@ -4,39 +4,69 @@
  * built using tutorial @ http://bost.ocks.org/mike/map/
  */
 
-var width = 960;
-var height = 1160;
+const width = 960;
+const height = 1160;
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+const svg = appendNewSvgElement(width, height);
+const path = d3.geo.path().projection(buildProjection());
 
-d3.json("uk.json", function(error, uk) {
-    if (error) {
-        return console.error(error);
-    }
+getUkGeoData().then(drawMap);
 
-    console.log(uk);
+function appendNewSvgElement(width, height) {
+    return d3.select('body').append('svg')
+        .attr('width', width)
+        .attr('height', height);
+}
 
-    const subunits = topojson.feature(uk, uk.objects.subunits);
-
-    const projection = d3.geo.albers()
+function buildProjection() {
+    return d3.geo.albers()
         .center([0, 55.4])
         .rotate([4.4, 0])
         .parallels([50, 60])
-        .scale(6000)
+        .scale(1200 * 5)
         .translate([width / 2, height / 2]);
+}
 
-    const path = d3.geo.path()
-        .projection(projection);
+function getUkGeoData() {
+    return new Promise(function(resolve, reject){
+         d3.json('uk.json', function(err, data){
+             if (err !== null) { return reject(err) };
+             resolve(data);
+         });
+    });
+}
 
-    svg.append("path")
-        .datum(subunits)
-        .attr("d", path);
+function drawMap(ukData) {
+    drawSubunits(ukData);
+    drawBoundaries(ukData);
+}
 
-    svg.selectAll(".subunit")
-        .data(topojson.feature(uk, uk.objects.subunits).features)
-        .enter().append("path")
-        .attr("class", d => "subunit " + d.id)
-        .attr("d", path);
-});
+function drawSubunits(ukData) {
+    svg.selectAll('.subunit')
+        .data(topojson.feature(ukData, ukData.objects.subunits).features)
+        .enter()
+        .append('path')
+        .attr('class', d => 'subunit ' + d.id)
+        .attr('d', path);
+}
+
+function drawBoundaries(ukData) {
+    drawInteriorBorders(ukData);
+    drawIrishCoustline(ukData);
+}
+
+function drawInteriorBorders(uk) {
+    const mesh = topojson.mesh(uk, uk.objects.subunits, (a, b) => a !== b && a.id !== 'IRL');
+    svg.append('path')
+        .datum(mesh)
+        .attr('d', path)
+        .attr('class', 'subunit-boundary');
+}
+
+function drawIrishCoustline(uk) {
+    const mesh = topojson.mesh(uk, uk.objects.subunits, (a, b) => a === b && a.id === 'IRL');
+    svg.append('path')
+        .datum(mesh)
+        .attr('d', path)
+        .attr('class', 'subunit-boundary IRL');
+}
