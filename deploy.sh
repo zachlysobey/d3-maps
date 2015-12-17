@@ -1,18 +1,18 @@
 #!/bin/bash
 set -e # exit with nonzero exit code if anything fails
 
-# clear and re-create the out directory
-rm -rf out || exit 0;
-mkdir out;
+# clear and re-create the build directory
+rm -rf build || exit 0;
+mkdir build;
 
 # build the project
-cp index.html out/index.html
-cp uk.json out/uk.json
-cp script.js out/script.js
-cp style.css out/style.css
+cp src/uk.json build/uk.json
+cp src/index.html build/index.html
+cp src/script.js build/script.js
+cp src/style.css build/style.css
 
-# go to the out directory and create a *new* Git repo
-cd out
+# go to the build directory and create a *new* Git repo
+cd build
 git init
 
 # inside this git repo we'll pretend to be a new user
